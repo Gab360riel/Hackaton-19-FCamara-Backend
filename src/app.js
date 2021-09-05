@@ -1,6 +1,6 @@
 import express from 'express';
 import swaggerUi from 'swagger-ui-express';
-
+import cors from 'cors';
 import routes from './routes';
 
 import swaggerDocs from './swagger.json';
@@ -21,6 +21,7 @@ class App {
   }
 
   routes() {
+    this.server.use(cors());
     this.server.use(routes);
   }
 }
