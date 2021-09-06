@@ -16,6 +16,10 @@ routes.post('/sessions', SessionController.store);
 routes.use(authMiddleware);
 
 routes.get('/scheduling', SchedulingController.index);
+routes.get(
+  '/scheduling/todaySchedulings',
+  SchedulingController.listTodaySchedulings
+);
 routes.post('/scheduling', SchedulingController.store);
 routes.delete('/scheduling/:id', SchedulingController.delete);
 

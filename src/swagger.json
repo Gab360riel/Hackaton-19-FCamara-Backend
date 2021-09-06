@@ -120,6 +120,141 @@
           }
         }
       }
+    },
+    "/scheduling/todaySchedulings": {
+      "get": {
+        "summary": "Listagem de agendamentos",
+        "description": "Esta rota é responsável por listar os agendamentos por dia e escritório",
+        "tags": ["Schedulings"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "office",
+            "in": "query",
+            "description": "Escritório que foi agendado. Number(1 = São Paulo; 2= Santos)",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Scheduling"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/scheduling": {
+      "get": {
+        "summary": "Listagem de agendamentos",
+        "description": "Esta rota é responsável por listar os agendamentos por escritório, ignorando o dia",
+        "tags": ["Schedulings"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "office",
+            "in": "query",
+            "description": "Escritório que foi agendado. Number(1 = São Paulo; 2= Santos)",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Scheduling"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Criação de agendamentos",
+        "description": "Esta rota é responsável por criar os agendamentos",
+        "tags": ["Schedulings"],
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Session"
+              },
+              "examples": {
+                "session":{
+                  "value": {
+                    "office": 1,
+                    "date": "2021-09-08T08:00:00.000Z"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "401": {
+            "description": "Bad Request"
+          },
+          "400": {
+            "description": "Verifique novamente os dados inseridos!"
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Scheduling"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/scheduling/{id}": {
+      "delete": {
+        "summary": "Exclusão de agendamentos",
+        "description": "Esta rota é responsável por excluir os agendamentos",
+        "tags": ["Schedulings"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters":[
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID do agendamento",
+            "required": true
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Bad Request"
+          },
+          "400": {
+            "description": "Verifique novamente os dados inseridos!"
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Scheduling"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -149,6 +284,17 @@
           },
           "token": {
             "type": "string"
+          }
+        }
+      },
+      "Scheduling": {
+        "type": "object",
+        "properties": {
+          "office": {
+            "type": "number"
+          },
+          "date": {
+            "type": "date-time"
           }
         }
       }

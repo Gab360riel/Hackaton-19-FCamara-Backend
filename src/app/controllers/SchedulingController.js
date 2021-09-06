@@ -7,6 +7,23 @@ class SchedulingController {
   async index(req, res) {
     const { office } = req.query;
 
+    const scheduling = await Scheduling.findAll({
+      where: { office, canceled_at: null },
+      attributes: ['id', 'date', 'past', 'cancelable'],
+      include: [
+        {
+          model: User,
+          as: 'user',
+          attributes: ['id', 'name'],
+        },
+      ],
+    });
+    return res.json(scheduling);
+  }
+
+  async listTodaySchedulings(req, res) {
+    const { office } = req.query;
+
     const current_date = format(
       endOfDay(new Date()),
       "yyyy-MM-dd'T'08:00:00'.000Z'"
