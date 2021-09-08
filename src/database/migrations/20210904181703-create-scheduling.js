@@ -22,6 +22,14 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
       },
+      sector: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
+      seat: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
       canceled_at: {
         type: Sequelize.DATE,
         allowNull: true,

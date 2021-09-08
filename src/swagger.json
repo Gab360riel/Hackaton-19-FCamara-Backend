@@ -160,7 +160,7 @@
           {
             "name": "office",
             "in": "query",
-            "description": "Escritório que foi agendado. Number(1 = São Paulo; 2= Santos)",
+            "description": "Escritório que foi agendado. Number(1 = São Paulo; 2 = Santos)",
             "required": true
           }
         ],
@@ -190,10 +190,12 @@
                 "$ref": "#/components/schemas/Session"
               },
               "examples": {
-                "session":{
+                "scheduling":{
                   "value": {
                     "office": 1,
-                    "date": "2021-09-08T08:00:00.000Z"
+                    "sector": 1,
+                    "seat": 1,
+                    "date": "2021-09-08"
                   }
                 }
               }
@@ -291,6 +293,12 @@
         "type": "object",
         "properties": {
           "office": {
+            "type": "number"
+          },
+          "sector": {
+            "type": "number"
+          },
+          "seat": {
             "type": "number"
           },
           "date": {

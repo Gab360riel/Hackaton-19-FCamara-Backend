@@ -18,6 +18,7 @@ class SchedulingController {
         },
       ],
     });
+
     return res.json(scheduling);
   }
 
@@ -31,7 +32,15 @@ class SchedulingController {
 
     const scheduling = await Scheduling.findAll({
       where: { date: current_date, office, canceled_at: null },
-      attributes: ['id', 'date', 'past', 'cancelable'],
+      attributes: [
+        'id',
+        'date',
+        'past',
+        'office',
+        'sector',
+        'seat',
+        'cancelable',
+      ],
       include: [
         {
           model: User,
@@ -40,12 +49,15 @@ class SchedulingController {
         },
       ],
     });
+
     return res.json(scheduling);
   }
 
   async store(req, res) {
     const schema = Yup.object().shape({
       office: Yup.number().required(),
+      sector: Yup.number().required(),
+      seat: Yup.number().required(),
       date: Yup.date().required(),
     });
 
@@ -53,7 +65,42 @@ class SchedulingController {
       return res.status(400).json({ error: 'Verifique os dados inseridos' });
     }
 
-    const { office, date } = req.body;
+    const { office, date, sector, seat } = req.body;
+
+    const data = `${date}T08:00:00.000Z`;
+
+    const schedulingExists = await Scheduling.findOne({
+      where: { date: data, office, sector, seat, canceled_at: null },
+    });
+
+    const userSchedulingExists = await Scheduling.findOne({
+      where: { date: data, user_id: req.userId, canceled_at: null },
+    });
+
+    const allSchedulings = await Scheduling.findAll({
+      where: { office, canceled_at: null },
+    });
+
+    if (
+      (office === 1 && allSchedulings.length === 240) ||
+      (office === 2 && allSchedulings.length === 40)
+    ) {
+      return res
+        .status(400)
+        .json({ error: 'A lotação máxima diária foi atingida!' });
+    }
+
+    if (userSchedulingExists) {
+      return res
+        .status(400)
+        .json({ error: 'Você já marcou uma visita à empresa para esse dia' });
+    }
+
+    if (schedulingExists) {
+      return res
+        .status(400)
+        .json({ error: 'O lugar escolhido está oucupado!' });
+    }
 
     const schedule = parseISO(date);
 
@@ -66,7 +113,9 @@ class SchedulingController {
     const scheduling = await Scheduling.create({
       user_id: req.userId,
       office,
-      date,
+      date: data,
+      sector,
+      seat,
     });
 
     return res.json(scheduling);

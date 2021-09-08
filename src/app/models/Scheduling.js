@@ -7,6 +7,8 @@ class Scheduling extends Model {
       {
         date: Sequelize.DATE,
         office: Sequelize.INTEGER,
+        sector: Sequelize.INTEGER,
+        seat: Sequelize.INTEGER,
         canceled_at: Sequelize.DATE,
         past: {
           type: Sequelize.VIRTUAL,
