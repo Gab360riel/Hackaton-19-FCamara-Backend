@@ -36,6 +36,40 @@ class UserController {
 
     return res.json({ id, name, email });
   }
+
+  async forgotPassword(req, res) {
+    const schema = Yup.object().shape({
+      email: Yup.string().required(),
+      password: Yup.string().required().min(4),
+      confirmPassword: Yup.string().when('password', (password, field) =>
+        password ? field.required().oneOf([Yup.ref('password')]) : field
+      ),
+    });
+
+    if (!(await schema.isValid(req.body))) {
+      return res.status(400).json({
+        error: 'Verifique novamente as informações inseridas!',
+      });
+    }
+
+    const { email, password } = req.body;
+
+    const user = await User.findOne({ where: { email } });
+
+    if (!user) {
+      return res.json({ error: 'O usuário não existe' });
+    }
+
+    if (password && (await user.checkPassword(password))) {
+      return res
+        .status(401)
+        .json({ error: 'A senha cadastrada é igual a que inseriu' });
+    }
+
+    await user.update(req.body);
+
+    return res.status(200).json({ message: 'Sua nova senha está cadastrada' });
+  }
 }
 
 export default new UserController();

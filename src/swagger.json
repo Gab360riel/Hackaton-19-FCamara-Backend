@@ -78,7 +78,76 @@
         }
       }
     },
+    "/users/forgotPassword": {
+      "put": {
+        "summary": "Troca de senha",
+        "description": "Esta rota é responsável por trocar a senha do usuário que a tenha esquecido",
+        "tags": ["Users"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/forgotPassword"
+              },
+              "examples": {
+                "scheduling":{
+                  "value": {
+                    "email": "teste@teste.com",
+                    "password": "1234",
+                    "confirmPassword": "1234"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "401": {
+            "description": "Bad Request"
+          },
+          "400": {
+            "description": "Verifique novamente os dados inseridos!"
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Scheduling"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/sessions": {
+      "get": {
+        "summary": "Listagem de Usuário Logado",
+        "description": "Esta rota é responsável por listar um usuário que esteja logado",
+        "tags": ["Sessions"],
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "401": {
+            "description": "Bad Request"
+          },
+          "400": {
+            "description": "Verifique novamente os dados inseridos!"
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Session"
+                }
+              }
+            }
+          }
+        }
+      },
       "post": {
         "summary": "Autenticação de Usuários",
         "description": "Esta rota é responsável por autenticar os Usuários",
@@ -271,6 +340,20 @@
             "type": "string"
           },
           "password": {
+            "type": "string"
+          }
+        }
+      },
+      "forgotPassword": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "confirmPassword": {
             "type": "string"
           }
         }

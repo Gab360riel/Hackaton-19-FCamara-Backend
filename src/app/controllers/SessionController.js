@@ -5,6 +5,24 @@ import User from '../models/user';
 import authentConfig from '../../config/auth';
 
 class SessionController {
+  async index(req, res) {
+    const user = await User.findOne({ where: { id: req.userId } });
+
+    if (!user) {
+      return res.status(401).json({ error: 'O usuário não foi encontrado' });
+    }
+
+    const { id, name, email } = user;
+
+    return res.json({
+      user: {
+        id,
+        name,
+        email,
+      },
+    });
+  }
+
   async store(req, res) {
     const schema = Yup.object().shape({
       email: Yup.string().email().required(),
