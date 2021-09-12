@@ -22,6 +22,43 @@ class SchedulingController {
     return res.json(scheduling);
   }
 
+  async listScheduleById(req, res) {
+    const { id } = req.params;
+
+    const scheduling = await Scheduling.findByPk(id, {
+      include: [
+        {
+          model: User,
+          as: 'user',
+          attributes: ['id', 'name'],
+        },
+      ],
+    });
+
+    return res.json(scheduling);
+  }
+
+  async listUserSchedules(req, res) {
+    const { page = 1, order = 'date' } = req.query;
+
+    const scheduling = await Scheduling.findAll({
+      where: { user_id: req.userId },
+      order: order === 'date' ? [[order, 'DESC']] : [[order, 'ASC']],
+      limit: 5,
+      offset: (page - 1) * 5,
+      attributes: ['id', 'date', 'past', 'cancelable'],
+      include: [
+        {
+          model: User,
+          as: 'user',
+          attributes: ['id', 'name'],
+        },
+      ],
+    });
+
+    return res.json(scheduling);
+  }
+
   async listTodaySchedulings(req, res) {
     const { office } = req.query;
 

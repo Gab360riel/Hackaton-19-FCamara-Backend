@@ -190,9 +190,73 @@
         }
       }
     },
+    "/scheduling/id/{id}": {
+      "get": {
+        "summary": "Listagem de um único agendamento",
+        "description": "Esta rota é responsável por listar um único agendamento",
+        "tags": ["Schedulings"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID do agendamento",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Scheduling"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/scheduling/user": {
+      "get": {
+        "summary": "Listagem de Agendamentos (Usuário)",
+        "description": "Esta rota é responsável por listar todos os agendamentos de um usuário",
+        "tags": ["Schedulings"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Paginação para vizualização de agendamentos (5 agendamentos por página) (Default: 1)",
+            "required": false
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "description": "Ordenação dos agendamentos que serão mostrados (Default: date, DESC)",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Scheduling"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/scheduling/todaySchedulings": {
       "get": {
-        "summary": "Listagem de agendamentos",
+        "summary": "Listagem de Agendamentos por dia",
         "description": "Esta rota é responsável por listar os agendamentos por dia e escritório",
         "tags": ["Schedulings"],
         "security": [{ "bearerAuth": [] }],

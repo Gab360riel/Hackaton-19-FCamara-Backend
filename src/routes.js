@@ -22,6 +22,8 @@ routes.get(
   '/scheduling/todaySchedulings',
   SchedulingController.listTodaySchedulings
 );
+routes.get('/scheduling/id/:id', SchedulingController.listScheduleById);
+routes.get('/scheduling/user', SchedulingController.listUserSchedules);
 routes.post('/scheduling', SchedulingController.store);
 routes.delete('/scheduling/:id', SchedulingController.delete);
 
