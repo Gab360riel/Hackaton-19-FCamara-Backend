@@ -1,0 +1,465 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "API Squad 19 - Hackaton FCamara",
+    "description": "Essa API foi criada afim de atender a necessidade da volta presencial e respeitar as regras impostas pelo governo",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3333",
+      "description": "API em modo de dev."
+    },
+    {
+      "url": "http://heroku/?",
+      "description": "API em modo de prod. (não ativa)"
+    }
+  ],
+  "paths": {
+    "/users": {
+      "get": {
+        "summary": "Listagem de Usuários",
+        "description": "Esta rota é responsável por Listar os Usuários",
+        "tags": ["Users"],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Criação de Usuários",
+        "description": "Esta rota é responsável por Criar os Usuários",
+        "tags": ["Users"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              },
+              "examples": {
+                "user":{
+                  "value": {
+                    "name": "Pedro",
+                    "email": "pedro@hotmail.com",
+                    "password": "1234"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "401": {
+            "description": "Este email já está cadastrado!"
+          },
+          "400": {
+            "description": "Verifique novamente os dados inseridos!"
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/forgotPassword": {
+      "put": {
+        "summary": "Troca de senha",
+        "description": "Esta rota é responsável por trocar a senha do usuário que a tenha esquecido",
+        "tags": ["Users"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/forgotPassword"
+              },
+              "examples": {
+                "scheduling":{
+                  "value": {
+                    "email": "teste@teste.com",
+                    "password": "1234",
+                    "confirmPassword": "1234"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "401": {
+            "description": "Bad Request"
+          },
+          "400": {
+            "description": "Verifique novamente os dados inseridos!"
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Scheduling"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sessions": {
+      "get": {
+        "summary": "Listagem de Usuário Logado",
+        "description": "Esta rota é responsável por listar um usuário que esteja logado",
+        "tags": ["Sessions"],
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "401": {
+            "description": "Bad Request"
+          },
+          "400": {
+            "description": "Verifique novamente os dados inseridos!"
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Session"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Autenticação de Usuários",
+        "description": "Esta rota é responsável por autenticar os Usuários",
+        "tags": ["Sessions"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Session"
+              },
+              "examples": {
+                "session":{
+                  "value": {
+                    "email": "pedro@hotmail.com",
+                    "password": "1234"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "401": {
+            "description": "Bad Request"
+          },
+          "400": {
+            "description": "Verifique novamente os dados inseridos!"
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Session"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/scheduling/id/{id}": {
+      "get": {
+        "summary": "Listagem de um único agendamento",
+        "description": "Esta rota é responsável por listar um único agendamento",
+        "tags": ["Schedulings"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID do agendamento",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Scheduling"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/scheduling/user": {
+      "get": {
+        "summary": "Listagem de Agendamentos (Usuário)",
+        "description": "Esta rota é responsável por listar todos os agendamentos de um usuário",
+        "tags": ["Schedulings"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Paginação para vizualização de agendamentos (5 agendamentos por página) (Default: 1)",
+            "required": false
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "description": "Ordenação dos agendamentos que serão mostrados (Default: date, DESC)",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Scheduling"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/scheduling/todaySchedulings": {
+      "get": {
+        "summary": "Listagem de Agendamentos por dia",
+        "description": "Esta rota é responsável por listar os agendamentos por dia e escritório",
+        "tags": ["Schedulings"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "office",
+            "in": "query",
+            "description": "Escritório que foi agendado. Number(1 = São Paulo; 2= Santos)",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Scheduling"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/scheduling": {
+      "get": {
+        "summary": "Listagem de agendamentos",
+        "description": "Esta rota é responsável por listar os agendamentos por escritório, ignorando o dia",
+        "tags": ["Schedulings"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "office",
+            "in": "query",
+            "description": "Escritório que foi agendado. Number(1 = São Paulo; 2 = Santos)",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Scheduling"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Criação de agendamentos",
+        "description": "Esta rota é responsável por criar os agendamentos",
+        "tags": ["Schedulings"],
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Session"
+              },
+              "examples": {
+                "scheduling":{
+                  "value": {
+                    "office": 1,
+                    "sector": 1,
+                    "seat": 1,
+                    "date": "2021-09-08"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "401": {
+            "description": "Bad Request"
+          },
+          "400": {
+            "description": "Verifique novamente os dados inseridos!"
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Scheduling"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/scheduling/{id}": {
+      "delete": {
+        "summary": "Exclusão de agendamentos",
+        "description": "Esta rota é responsável por excluir os agendamentos",
+        "tags": ["Schedulings"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters":[
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID do agendamento",
+            "required": true
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Bad Request"
+          },
+          "400": {
+            "description": "Verifique novamente os dados inseridos!"
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Scheduling"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        }
+      },
+      "forgotPassword": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "confirmPassword": {
+            "type": "string"
+          }
+        }
+      },
+      "Session": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "token": {
+            "type": "string"
+          }
+        }
+      },
+      "Scheduling": {
+        "type": "object",
+        "properties": {
+          "office": {
+            "type": "number"
+          },
+          "sector": {
+            "type": "number"
+          },
+          "seat": {
+            "type": "number"
+          },
+          "date": {
+            "type": "date-time"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}
