@@ -259,10 +259,39 @@
         }
       }
     },
-    "/scheduling/user": {
+    "/scheduling/all/user": {
       "get": {
         "summary": "Listagem de Agendamentos (Usuário)",
         "description": "Esta rota é responsável por listar todos os agendamentos de um usuário",
+        "tags": ["Schedulings"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "order",
+            "in": "query",
+            "description": "Ordenação dos agendamentos que serão mostrados (Default: date, DESC)",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Scheduling"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/scheduling/user": {
+      "get": {
+        "summary": "Listagem de Agendamentos (Usuário)",
+        "description": "Esta rota é responsável por listar todos os agendamentos de um usuário, com limite de 5 por página",
         "tags": ["Schedulings"],
         "security": [{ "bearerAuth": [] }],
         "parameters": [

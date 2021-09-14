@@ -40,6 +40,25 @@ class SchedulingController {
     return res.json(scheduling);
   }
 
+  async listAllUserSchedules(req, res) {
+    const { order = 'date' } = req.query;
+
+    const scheduling = await Scheduling.findAll({
+      where: { user_id: req.userId },
+      order: order === 'date' ? [[order, 'DESC']] : [[order, 'ASC']],
+      attributes: ['id', 'date', 'past', 'cancelable'],
+      include: [
+        {
+          model: User,
+          as: 'user',
+          attributes: ['id', 'name'],
+        },
+      ],
+    });
+
+    return res.json(scheduling);
+  }
+
   async listUserSchedules(req, res) {
     const { page = 1, order = 'date' } = req.query;
 
