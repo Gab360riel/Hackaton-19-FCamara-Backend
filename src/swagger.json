@@ -79,20 +79,60 @@
       }
     },
     "/users/forgotPassword": {
-      "put": {
-        "summary": "Troca de senha",
-        "description": "Esta rota é responsável por trocar a senha do usuário que a tenha esquecido",
+      "post": {
+        "summary": "Requisição para troca de senha",
+        "description": "Esta rota é responsável por enviar um email ao usuário para troca de senha",
         "tags": ["Users"],
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/forgotPassword"
+                "$ref": "#/components/schemas/forgotPassword_1"
               },
               "examples": {
                 "scheduling":{
                   "value": {
-                    "email": "teste@teste.com",
+                    "email": "teste@teste.com"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "401": {
+            "description": "Bad Request"
+          },
+          "400": {
+            "description": "Verifique novamente os dados inseridos!"
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Scheduling"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Troca de senha",
+        "description": "Esta rota é responsável por trocar a senha do usuário que a tenha esquecido",
+        "tags": ["Users"],
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/forgotPassword_2"
+              },
+              "examples": {
+                "scheduling":{
+                  "value": {
                     "password": "1234",
                     "confirmPassword": "1234"
                   }
@@ -408,12 +448,17 @@
           }
         }
       },
-      "forgotPassword": {
+      "forgotPassword_1": {
         "type": "object",
         "properties": {
           "email": {
             "type": "string"
-          },
+          }
+        }
+      },
+      "forgotPassword_2": {
+        "type": "object",
+        "properties": {
           "password": {
             "type": "string"
           },

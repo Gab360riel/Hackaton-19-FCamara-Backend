@@ -3,6 +3,8 @@ import { endOfDay, format, isBefore, parseISO, subHours } from 'date-fns';
 import User from '../models/user';
 import Scheduling from '../models/Scheduling';
 
+import Mail from '../../lib/Mail';
+
 class SchedulingController {
   async index(req, res) {
     const { office } = req.query;
@@ -105,6 +107,11 @@ class SchedulingController {
     const { office, date, sector, seat } = req.body;
 
     const data = `${date}T08:00:00.000Z`;
+    const selected_date = format(parseISO(data), 'dd-MM-yyyy');
+
+    const user = await User.findByPk(req.userId, {
+      attributes: ['name', 'email'],
+    });
 
     const schedulingExists = await Scheduling.findOne({
       where: { date: data, office, sector, seat, canceled_at: null },
@@ -155,6 +162,16 @@ class SchedulingController {
       seat,
     });
 
+    await Mail.sendMail({
+      to: `${user.name} <${user.email}>`,
+      subject: 'Agendamento marcado com sucesso!',
+      template: 'scheduling',
+      context: {
+        user: user.name,
+        date: selected_date,
+      },
+    });
+
     return res.json(scheduling);
   }
 
@@ -167,6 +184,12 @@ class SchedulingController {
           attributes: ['id', 'name'],
         },
       ],
+    });
+
+    const selected_date = format(scheduling.date, 'dd-MM-yyyy');
+
+    const user = await User.findByPk(req.userId, {
+      attributes: ['name', 'email'],
     });
 
     if (scheduling.user_id !== req.userId) {
@@ -187,6 +210,16 @@ class SchedulingController {
     scheduling.canceled_at = new Date();
 
     await scheduling.save();
+
+    await Mail.sendMail({
+      to: `${user.name} <${user.email}>`,
+      subject: 'Agendamento cancelado!',
+      template: 'cancellation',
+      context: {
+        user: user.name,
+        date: selected_date,
+      },
+    });
 
     return res.json(scheduling);
   }
