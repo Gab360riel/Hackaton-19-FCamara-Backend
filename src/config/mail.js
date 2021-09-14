@@ -1,10 +1,8 @@
 export default {
-  host: 'smtp.mailtrap.io',
-  port: 2525,
-  secure: false,
+  service: 'Gmail',
   auth: {
-    user: '735c921de2183a',
-    pass: '7d6633811c68fa',
+    user: process.env.MAIL_USER,
+    pass: process.env.MAIL_PASS,
   },
   default: {
     from: 'Equipe FCalendar <noreply@fcalendar.com>',

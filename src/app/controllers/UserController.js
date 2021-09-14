@@ -1,5 +1,10 @@
+import jwt from 'jsonwebtoken';
 import * as Yup from 'yup';
 import User from '../models/user';
+
+import Mail from '../../lib/Mail';
+
+import authentConfig from '../../config/auth';
 
 class UserController {
   async index(req, res) {
@@ -37,9 +42,49 @@ class UserController {
     return res.json({ id, name, email });
   }
 
-  async forgotPassword(req, res) {
+  async forgotPassword_1(req, res) {
     const schema = Yup.object().shape({
       email: Yup.string().required(),
+    });
+
+    if (!(await schema.isValid(req.body))) {
+      return res.status(400).json({
+        error: 'Verifique novamente as informações inseridas!',
+      });
+    }
+
+    const { email } = req.body;
+
+    const user = await User.findOne({ where: { email } });
+
+    const { id } = user;
+
+    if (!user) {
+      return res.json({ error: 'O usuário não existe' });
+    }
+
+    const token = jwt.sign({ id }, authentConfig.secret, {
+      expiresIn: authentConfig.expiresIn,
+    });
+
+    await Mail.sendMail({
+      to: `${user.name} <${user.email}>`,
+      subject: 'Alteração de Senha!',
+      template: 'forgotPassword',
+      context: {
+        user: user.name,
+        token,
+      },
+    });
+
+    return res.status(200).json({
+      user,
+      token,
+    });
+  }
+
+  async forgotPassword_2(req, res) {
+    const schema = Yup.object().shape({
       password: Yup.string().required().min(4),
       confirmPassword: Yup.string().when('password', (password, field) =>
         password ? field.required().oneOf([Yup.ref('password')]) : field
@@ -52,9 +97,11 @@ class UserController {
       });
     }
 
-    const { email, password } = req.body;
+    const { password } = req.body;
 
-    const user = await User.findOne({ where: { email } });
+    const id = req.userId;
+
+    const user = await User.findByPk(id);
 
     if (!user) {
       return res.json({ error: 'O usuário não existe' });

@@ -1,10 +1,12 @@
+require('dotenv/config');
+
 module.exports = {
   dialect: 'postgres',
-  host: 'chunee.db.elephantsql.com',
-  port: 5432,
-  username: 'xgagjwlf',
-  password: 'J5KaNDQZipRutwWxIfsCxFgSoTY-c9OV',
-  database: 'xgagjwlf',
+  host: process.env.DB_HOST,
+  port: process.env.DB_PORT,
+  username: process.env.DB_USER,
+  password: process.env.DB_PASS,
+  database: process.env.DB_NAME,
   define: {
     timestamps: true,
     underscored: true,
