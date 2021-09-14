@@ -67,7 +67,7 @@ class SchedulingController {
       order: order === 'date' ? [[order, 'DESC']] : [[order, 'ASC']],
       limit: 5,
       offset: (page - 1) * 5,
-      attributes: ['id', 'date', 'past', 'cancelable'],
+      attributes: ['id', 'date', 'past', 'cancelable', 'office', 'sector'],
       include: [
         {
           model: User,
