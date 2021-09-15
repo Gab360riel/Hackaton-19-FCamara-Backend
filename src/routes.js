@@ -27,6 +27,7 @@ routes.get(
 routes.get('/scheduling/id/:id', SchedulingController.listScheduleById);
 routes.get('/scheduling/all/user', SchedulingController.listAllUserSchedules);
 routes.get('/scheduling/user', SchedulingController.listUserSchedules);
+routes.get('/scheduling/last/user', SchedulingController.listLastSchedules);
 routes.post('/scheduling', SchedulingController.store);
 routes.delete('/scheduling/:id', SchedulingController.delete);
 

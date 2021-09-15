@@ -58,7 +58,26 @@ class SchedulingController {
 
     return res.json(scheduling);
   }
+  async listLastSchedules(req, res) {
+    const { page =1, order = 'date' } = req.query;
 
+    const scheduling = await Scheduling.findAll({
+      where: { user_id: req.userId, canceled_at: null},
+      order: order === 'date' ? [[order, 'DESC']] : [[order, 'ASC']],
+      limit: 3,
+      offset: (page - 1) * 3,
+      attributes: ['id', 'date', 'past', 'cancelable', 'office', 'sector', 'seat'],
+      include: [
+        {
+          model: User,
+          as: 'user',
+          attributes: ['id', 'name'],
+        },
+      ],
+    });
+
+    return res.json(scheduling);
+  }
   async listUserSchedules(req, res) {
     const { page = 1, order = 'date' } = req.query;
 
@@ -227,7 +246,6 @@ class SchedulingController {
     }
 
     scheduling.canceled_at = new Date();
-
     await scheduling.save();
 
     await Mail.sendMail({
