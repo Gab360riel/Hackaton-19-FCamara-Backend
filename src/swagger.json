@@ -259,6 +259,41 @@
         }
       }
     },
+    "/scheduling/user": {
+      "get": {
+        "summary": "Listagem de Agendamentos (Usuário)",
+        "description": "Esta rota é responsável por listar todos os agendamentos de um usuário, com limite de 5 por página",
+        "tags": ["Schedulings"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Paginação para vizualização de agendamentos (5 agendamentos por página) (Default: 1)",
+            "required": false
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "description": "Ordenação dos agendamentos que serão mostrados (Default: date, DESC)",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Scheduling"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/scheduling/all/user": {
       "get": {
         "summary": "Listagem de Agendamentos (Usuário)",
@@ -288,10 +323,10 @@
         }
       }
     },
-    "/scheduling/user": {
+    "/scheduling/last/user": {
       "get": {
         "summary": "Listagem de Agendamentos (Usuário)",
-        "description": "Esta rota é responsável por listar todos os agendamentos de um usuário, com limite de 5 por página",
+        "description": "Esta rota é responsável por listar todos os agendamentos que não foram cancelados de um usuário",
         "tags": ["Schedulings"],
         "security": [{ "bearerAuth": [] }],
         "parameters": [
@@ -334,6 +369,12 @@
             "name": "office",
             "in": "query",
             "description": "Escritório que foi agendado. Number(1 = São Paulo; 2= Santos)",
+            "required": true
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "description": "Data do agendamento",
             "required": true
           }
         ],

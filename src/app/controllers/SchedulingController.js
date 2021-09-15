@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { endOfDay, format, isBefore, parseISO, subHours } from 'date-fns';
+import { format, isBefore, parseISO, subHours } from 'date-fns';
 import User from '../models/user';
 import Scheduling from '../models/Scheduling';
 
@@ -58,15 +58,24 @@ class SchedulingController {
 
     return res.json(scheduling);
   }
+
   async listLastSchedules(req, res) {
-    const { page =1, order = 'date' } = req.query;
+    const { page = 1, order = 'date' } = req.query;
 
     const scheduling = await Scheduling.findAll({
-      where: { user_id: req.userId, canceled_at: null},
+      where: { user_id: req.userId, canceled_at: null },
       order: order === 'date' ? [[order, 'DESC']] : [[order, 'ASC']],
       limit: 3,
       offset: (page - 1) * 3,
-      attributes: ['id', 'date', 'past', 'cancelable', 'office', 'sector', 'seat'],
+      attributes: [
+        'id',
+        'date',
+        'past',
+        'cancelable',
+        'office',
+        'sector',
+        'seat',
+      ],
       include: [
         {
           model: User,
@@ -78,6 +87,7 @@ class SchedulingController {
 
     return res.json(scheduling);
   }
+
   async listUserSchedules(req, res) {
     const { page = 1, order = 'date' } = req.query;
 
@@ -86,7 +96,15 @@ class SchedulingController {
       order: order === 'date' ? [[order, 'DESC']] : [[order, 'ASC']],
       limit: 5,
       offset: (page - 1) * 5,
-      attributes: ['id', 'date', 'past', 'cancelable', 'office', 'sector', 'seat'],
+      attributes: [
+        'id',
+        'date',
+        'past',
+        'cancelable',
+        'office',
+        'sector',
+        'seat',
+      ],
       include: [
         {
           model: User,
@@ -100,12 +118,9 @@ class SchedulingController {
   }
 
   async listTodaySchedulings(req, res) {
-    const { office } = req.query;
+    const { office, date } = req.query;
 
-    const current_date = format(
-      endOfDay(new Date()),
-      "yyyy-MM-dd'T'08:00:00'.000Z'"
-    );
+    const current_date = format(parseISO(date), "yyyy-MM-dd'T'08:00:00'.000Z'");
 
     const scheduling = await Scheduling.findAll({
       where: { date: current_date, office, canceled_at: null },
@@ -160,11 +175,11 @@ class SchedulingController {
     });
 
     const allSchedulings = await Scheduling.findAll({
-      where: { office, canceled_at: null },
+      where: { date: data, office, canceled_at: null },
     });
 
     if (
-      (office === 1 && allSchedulings.length === 240) ||
+      (office === 1 && allSchedulings.length === 4) ||
       (office === 2 && allSchedulings.length === 40)
     ) {
       return res
@@ -179,9 +194,7 @@ class SchedulingController {
     }
 
     if (schedulingExists) {
-      return res
-        .status(400)
-        .json({ error: 'O lugar escolhido está oucupado!' });
+      return res.status(400).json({ error: 'O lugar escolhido está ocupado!' });
     }
 
     const schedule = parseISO(date);
