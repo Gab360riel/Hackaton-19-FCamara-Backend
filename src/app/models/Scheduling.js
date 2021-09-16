@@ -19,7 +19,7 @@ class Scheduling extends Model {
         cancelable: {
           type: Sequelize.VIRTUAL,
           get() {
-            return isBefore(new Date(), subHours(this.date, 4));
+            return isBefore(new Date(), subHours(this.date, 2));
           },
         },
       },

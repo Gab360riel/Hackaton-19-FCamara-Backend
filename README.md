@@ -1,15 +1,38 @@
-# HACKATON-19-Fcamara-Backend
+<h1 align="center">
+    <img alt="FCalendar" src="https://i.postimg.cc/HnCSzQsK/fcalendar-banner-instalacao.png" />
+</h1>
+
+<br>
+
+> ## BACK-END 🔚
+> ### Requisitos
+
+
++ Node.js x64 - versão 14.16.0
++ Yarn - versão 1.22.4
++ Postgres - ElephantSQL
+
+<br>
+<br>
+
+
+> ### Instalação
+
++ Instale o npm.
+
++ Instale o Yarn
+
++ Dê um fork ou clone este repositório em sua máquina local;
+
++ Entre no diretório /backend e instale as dependências do backend:
+
+```npm
+ yarn
+```
 
 ## SWAGGER!
 O Swagger está linkado com a API, sua rota atual é.: http://localhost:3333/api-docs/#/
 
-## Clonando a API!!
-  1° - Verifique o melhor local para armazenar o código (pasta de documentos)\
-  OBS.: O clone já cria uma pasta com o nome do repositório!\
-  2° -  ```
-          git clone https://github.com/Gab360riel/Hackaton-19-FCamara-Backend.git
-        ``` \
-  3° - Com o repositório aberto, abra o terminal e execute o comando.: yarn\
-  4° - Agora é a parte fácil! O ultimo passo é o mais simples, rode.: yarn dev\
-  5° - Aproveite a API! OBS: ela está na porta 3333!
 
+<br>
+<br>
