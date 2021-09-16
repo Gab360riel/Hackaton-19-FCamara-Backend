@@ -120,7 +120,7 @@ class SchedulingController {
   async listTodaySchedulings(req, res) {
     const { office, date } = req.query;
 
-    const current_date = format(parseISO(date), "yyyy-MM-dd'T'08:00:00'.000Z'");
+    const current_date = format(parseISO(date), "yyyy-MM-dd'T'11:00:00'.000Z'");
 
     const scheduling = await Scheduling.findAll({
       where: { date: current_date, office, canceled_at: null },
@@ -159,7 +159,7 @@ class SchedulingController {
 
     const { office, date, sector, seat } = req.body;
 
-    const data = `${date}T08:00:00.000Z`;
+    const data = `${date}T08:00:00-03:00`;
     const selected_date = format(parseISO(data), 'dd-MM-yyyy');
 
     const user = await User.findByPk(req.userId, {
