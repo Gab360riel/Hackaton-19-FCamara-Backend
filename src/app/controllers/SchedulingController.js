@@ -60,13 +60,11 @@ class SchedulingController {
   }
 
   async listLastSchedules(req, res) {
-    const { page = 1, order = 'date' } = req.query;
+    const { order = 'date' } = req.query;
 
     const scheduling = await Scheduling.findAll({
       where: { user_id: req.userId, canceled_at: null },
-      order: order === 'date' ? [[order, 'DESC']] : [[order, 'ASC']],
-      limit: 3,
-      offset: (page - 1) * 3,
+      order: order === 'date' ? [[order, 'ASC']] : [[order, 'DESC']],
       attributes: [
         'id',
         'date',
@@ -93,7 +91,7 @@ class SchedulingController {
 
     const scheduling = await Scheduling.findAll({
       where: { user_id: req.userId },
-      order: order === 'date' ? [[order, 'DESC']] : [[order, 'ASC']],
+      order: order === 'date' ? [[order, 'ASC']] : [[order, 'DESC']],
       limit: 5,
       offset: (page - 1) * 5,
       attributes: [
@@ -158,7 +156,7 @@ class SchedulingController {
     }
 
     const { office, date, sector, seat } = req.body;
-
+    console.log(seat);
     const data = `${date}T08:00:00.000Z`;
     const selected_date = format(parseISO(data), 'dd-MM-yyyy');
 
