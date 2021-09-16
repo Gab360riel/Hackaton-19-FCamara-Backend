@@ -18,9 +18,9 @@
 
 > ### Instalação
 
-+ Instale o npm.
++ Instale o npm;
 
-+ Instale o Yarn
++ Instale o Yarn;
 
 + Dê um fork ou clone este repositório em sua máquina local;
 
