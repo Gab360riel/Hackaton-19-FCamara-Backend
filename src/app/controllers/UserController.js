@@ -67,7 +67,7 @@ class UserController {
       expiresIn: authentConfig.expiresIn,
     });
 
-    await Mail.sendMail({
+    Mail.sendMail({
       to: `${user.name} <${user.email}>`,
       subject: 'Alteração de Senha!',
       template: 'forgotPassword',

@@ -211,7 +211,7 @@ class SchedulingController {
       seat,
     });
 
-    await Mail.sendMail({
+    Mail.sendMail({
       to: `${user.name} <${user.email}>`,
       subject: 'Agendamento marcado com sucesso!',
       template: 'scheduling',
@@ -259,7 +259,7 @@ class SchedulingController {
     scheduling.canceled_at = new Date();
     await scheduling.save();
 
-    await Mail.sendMail({
+    Mail.sendMail({
       to: `${user.name} <${user.email}>`,
       subject: 'Agendamento cancelado!',
       template: 'cancellation',
